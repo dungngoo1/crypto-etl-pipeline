@@ -1,0 +1,106 @@
+version: '3.8'
+
+x-airflow-common: &airflow-common
+  image: apache/airflow:2.8.1-python3.10
+  environment:
+    - _PIP_ADDITIONAL_REQUIREMENTS=requests psycopg2-binary dbt-postgres
+    - AIRFLOW__CORE__LOAD_EXAMPLES=False
+    - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres-airflow:5432/airflow
+    - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+    - AIRFLOW__WEBSERVER__SECRET_KEY=46_crypto_pipeline_secret_key_12345
+    # Cấu hình biến môi trường kết nối Warehouse cho các script
+    - WAREHOUSE_HOST=postgres-warehouse
+    - WAREHOUSE_PORT=5432
+    - WAREHOUSE_DB=crypto_dw
+    - WAREHOUSE_USER=dw_user
+    - WAREHOUSE_PASSWORD=dw_password
+    
+  volumes:
+    - ./dags:/opt/airflow/dags
+    - ./scripts:/opt/airflow/scripts
+    - ./dbt_project:/opt/airflow/dbt_project
+    - ./logs:/opt/airflow/logs
+    - ./plugins:/opt/airflow/plugins
+  networks:
+    - data-network
+
+services:
+  # 1. Database metadata cho Airflow
+  postgres-airflow:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+    networks:
+      - data-network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 5s
+      retries: 5
+
+  # 2. Kho dữ liệu chính (Data Warehouse chứa Bronze, Silver, Gold)
+  postgres-warehouse:
+    image: postgres:15-alpine
+    container_name: postgres-warehouse
+    ports:
+      - "5433:5432" # Map ra máy thật cổng 5433 để tránh trùng port nếu máy bạn đã cài sẵn Postgres local
+    environment:
+      - POSTGRES_USER=dw_user
+      - POSTGRES_PASSWORD=dw_password
+      - POSTGRES_DB=crypto_dw
+    volumes:
+      - warehouse_data:/var/lib/postgresql/data
+      - ./scripts/init_warehouse.sql:/docker-entrypoint-initdb.d/init_warehouse.sql
+    networks:
+      - data-network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "dw_user", "-d", "crypto_dw"]
+      interval: 5s
+      retries: 5
+
+  # 3. Khởi tạo DB Airflow (chạy 1 lần)
+  airflow-init:
+    <<: *airflow-common
+    command: version
+    depends_on:
+      postgres-airflow:
+        condition: service_healthy
+    entrypoint:
+      - bash
+      - -c
+      - |
+        airflow db migrate
+        airflow users create \
+          --username admin \
+          --password admin \
+          --firstname Dung \
+          --lastname Ngo \
+          --role Admin \
+          --email admin@example.com || true
+  # 4. Airflow Webserver (UI)
+  airflow-webserver:
+    <<: *airflow-common
+    command: webserver
+    ports:
+      - "8080:8080"
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+    restart: always
+
+  # 5. Airflow Scheduler (Bộ lập lịch)
+  airflow-scheduler:
+    <<: *airflow-common
+    command: scheduler
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+    restart: always
+
+volumes:
+  warehouse_data:
+
+networks:
+  data-network:
+    driver: bridge

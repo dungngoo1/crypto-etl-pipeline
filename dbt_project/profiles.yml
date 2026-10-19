@@ -1,0 +1,12 @@
+dbt_project:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: postgres-warehouse
+      user: dw_user
+      password: dw_password
+      port: 5432
+      dbname: crypto_dw
+      schema: public
+      threads: 4

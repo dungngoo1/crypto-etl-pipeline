@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: bronze
+    schema: bronze
+    tables:
+      - name: raw_crypto_tickers
+        description: "Dữ liệu JSON thô lấy từ Binance Public API"

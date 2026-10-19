@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: dim_tokens
+    description: "Bảng Dimension chứa danh mục các đồng tiền điện tử"
+    columns:
+      - name: token_key
+        description: "Khóa chính băm MD5 đại diện cho từng token"
+        tests:
+          - unique
+          - not_null
+      - name: symbol
+        description: "Mã cặp giao dịch"
+        tests:
+          - not_null
+
+  - name: fact_market_metrics
+    description: "Bảng Fact chứa các số đo thị trường theo mốc thời gian"
+    columns:
+      - name: metric_key
+        description: "Khóa chính đại diện cho một bản ghi snapshot metric"
+        tests:
+          - unique
+          - not_null
+      - name: token_key
+        description: "Khóa ngoại liên kết tới dim_tokens"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_tokens')
+              field: token_key
+      - name: current_price
+        description: "Giá giao dịch gần nhất"
+        tests:
+          - not_null
