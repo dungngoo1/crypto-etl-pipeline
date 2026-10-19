@@ -1,91 +1,141 @@
-# Crypto Market Data Automated ELT Pipeline (Medallion Architecture)
+# 🚀 Crypto Market Data Automated ELT Pipeline (Medallion Architecture)
 
 [![Airflow](https://img.shields.io/badge/Orchestration-Apache%20Airflow%202.8-017CEE?style=flat&logo=Apache%20Airflow&logoColor=white)](https://airflow.apache.org/)
 [![dbt](https://img.shields.io/badge/Transform-dbt--core%201.11-FF694B?style=flat&logo=dbt&logoColor=white)](https://www.getdbt.com/)
 [![PostgreSQL](https://img.shields.io/badge/Warehouse-PostgreSQL%2015-336791?style=flat&logo=PostgreSQL&logoColor=white)](https://www.postgresql.org/)
 [![Docker](https://img.shields.io/badge/Containerization-Docker%20Compose-2496ED?style=flat&logo=Docker&logoColor=white)](https://www.docker.com/)
+[![Python](https://img.shields.io/badge/Python-3.10-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 
-Hệ thống Data Pipeline tự động thu thập dữ liệu biến động giá thị trường tiền điện tử từ Binance REST API, lưu trữ và mô hình hóa theo kiến trúc **Medallion (Bronze - Silver - Gold)** trên kho dữ liệu PostgreSQL, thực hiện kiểm định chất lượng tự động với **dbt-core** và điều phối định kỳ bằng **Apache Airflow**.
+Hệ thống Data Pipeline tự động thu thập dữ liệu biến động giá thị trường tiền điện tử từ Binance REST API, lưu trữ và mô hình hóa theo kiến trúc **Medallion (Bronze - Silver - Gold)** trên kho dữ liệu PostgreSQL, thực hiện kiểm định chất lượng tự động với **dbt-core** và điều phối workflow định kỳ bằng **Apache Airflow**.
 
 ---
 
-## 🏛️ Kiến trúc dữ liệu (Data Architecture)
+## 📑 Mục lục
+- [Kiến trúc hệ thống](#-kiến-trúc-hệ-thống-architecture)
+- [Điểm nổi bật về mặt kỹ thuật](#-điểm-nổi-bật-về-mặt-kỹ-thuật-key-engineering-highlights)
+- [Mô hình hóa dữ liệu (Star Schema)](#-mô-hình-hóa-dữ-liệu-star-schema)
+- [Tech Stack](#-công-nghệ-sử-dụng-tech-stack)
+- [Cấu trúc thư mục](#-cấu-trúc-thư-mục-project-structure)
+- [Hướng dẫn triển khai cục bộ (Local Setup)](#-hướng-dẫn-triển-khai-cục-bộ-local-setup)
+- [Kiểm thử & Vận hành thủ công (CLI)](#-kiểm-thử--vận-hành-thủ-công-cli)
+- [Tác giả](#-tác-giả)
 
-Dự án áp dụng mô hình luồng dữ liệu phân tầng nhằm đảm bảo tính toàn vẹn, khả năng mở rộng và chất lượng dữ liệu:
+---
 
+## 🏛️ Kiến trúc hệ thống (Architecture)
+
+Quy trình xử lý dữ liệu được thiết kế theo luồng ELT chuẩn hóa với các tầng phân định ranh giới rõ ràng:
+
+```
 ┌─────────────────────────────────┐
 │     Binance Public REST API     │
 └────────────────┬────────────────┘
-│
-│ (1) Ingestion Script (Requests + Psycopg2)
-│     Cơ chế Idempotent UPSERT (ON CONFLICT DO UPDATE)
-▼
+                 │
+                 │ (1) Ingestion Script (Requests + Psycopg2)
+                 │     Cơ chế Idempotent UPSERT (ON CONFLICT DO UPDATE)
+                 ▼
 ┌─────────────────────────────────┐
 │         BRONZE SCHEMA           │
-│   (bronze.raw_crypto_tickers)   │ -> Dữ liệu thô nguyên bản JSONB + Metadata
+│   (bronze.raw_crypto_tickers)   │ ──► Lưu nguyên bản JSONB payload & Ingest Metadata
 └────────────────┬────────────────┘
-│
-│ (2) dbt run --select silver
-│     Parse JSON (->>), ép kiểu dữ liệu, snake_case
-▼
+                 │
+                 │ (2) dbt run --select silver
+                 │     Parse JSON (->>), Cast kiểu dữ liệu, snake_case
+                 ▼
 ┌─────────────────────────────────┐
 │         SILVER SCHEMA           │
-│   (silver.stg_crypto_tickers)   │ -> Bảng dữ liệu sạch, chuẩn hóa cấu trúc
+│   (silver.stg_crypto_tickers)   │ ──► Bảng dữ liệu sạch, quan hệ chuẩn hóa
 └────────────────┬────────────────┘
-│
-│ (3) dbt run --select gold
-│     Surrogate Key Hash (MD5), Dimensional Modeling
-▼
+                 │
+                 │ (3) dbt run --select gold
+                 │     Surrogate Key Hash (MD5), Dimensional Modeling
+                 ▼
 ┌─────────────────────────────────┐
 │          GOLD SCHEMA            │
 │ ┌─────────────────────────────┐ │
-│ │  dim_tokens (Dimension)     │ │ -> Phục vụ phân tích theo danh mục
+│ │  dim_tokens (Dimension)     │ │ ──► Thông tin định danh Token & Asset
 │ └──────────────┬──────────────┘ │
 │                │ 1:N            │
 │ ┌──────────────▼──────────────┐ │
-│ │ fact_market_metrics (Fact)  │ │ -> Lưu vết chuỗi thời gian biến động giá
+│ │ fact_market_metrics (Fact)  │ │ ──► Số đo định lượng (Price, Volume, Count)
 │ └─────────────────────────────┘ │
 └────────────────┬────────────────┘
-│
-│ (4) dbt test
-▼
+                 │
+                 │ (4) dbt test
+                 ▼
 ┌─────────────────────────────────┐
-│         CIRCUIT BREAKER         │ -> Kiểm tra Unique, Not Null, Referential
-│      (Data Quality Gates)       │    Integrity; ngắt pipeline nếu sai lệch
+│         CIRCUIT BREAKER         │ ──► Kiểm tra Unique, Not Null, Foreign Key
+│      (Data Quality Gates)       │     Tự động ngắt downstream khi phát hiện sai lệch
 └─────────────────────────────────┘
-
-
+```
 
 ---
 
 ## 💡 Điểm nổi bật về mặt kỹ thuật (Key Engineering Highlights)
 
-- **Idempotency & Data Ingestion (Bronze Layer):** 
-  Script Python sử dụng câu lệnh `INSERT ... ON CONFLICT (symbol, ingested_at) DO UPDATE` để đảm bảo tính Idempotent khi pipeline thực thi lại (retry hoặc backfill) mà không tạo ra bản ghi nhân bản hay sai lệch dữ liệu.
-- **Data Transformation & Modeling (Silver & Gold Layers):** 
-  - **Silver:** Bóc tách JSON payload sang các trường dữ liệu quan hệ với kiểu chuẩn (`NUMERIC`, `BIGINT`, `TIMESTAMPTZ`), lọc bỏ dữ liệu rác.
-  - **Gold:** Xây dựng mô hình hình sao (Star Schema). Tạo Surrogate Key cho Dimension và Fact bằng hàm băm `MD5` kết hợp chuỗi định danh duy nhất (`symbol`, `snapshot_timestamp`, `ingested_at`).
-- **Data Quality & Circuit Breaker (dbt test):** 
-  Thiết lập bộ kiểm thử tự động gồm các ràng buộc `unique`, `not_null` cho Primary Keys và `relationships` kiểm tra khóa ngoại giữa Fact và Dimension. Nếu bất kỳ bài kiểm tra nào thất bại, `dbt test` trả về exit code `1`, kích hoạt cơ chế Circuit Breaker dừng toàn bộ downstream pipeline trong Airflow để bảo vệ kho dữ liệu.
-- **Workflow Orchestration (Apache Airflow):** 
-  Đóng gói toàn bộ cụm dịch vụ qua Docker Compose; điều phối luồng tuần tự (`Bronze >> Silver >> Gold >> Data Quality Test`) theo lịch trình `@hourly` với cơ chế retry tự động (`retries=2`, `retry_delay=2m`).
+### 1. Data Ingestion & Tính Idempotency (Bronze Layer)
+- Sử dụng Python trích xuất dữ liệu snapshot 24h ticker của danh mục Watchlist từ Binance API.
+- Lưu trữ toàn bộ payload dưới dạng kiểu `JSONB` trong PostgreSQL kèm metadata thời gian (`ingested_at`).
+- Triển khai cơ chế **UPSERT** (`INSERT ... ON CONFLICT (symbol, ingested_at) DO UPDATE`) giúp pipeline có tính **Idempotent** (khi chạy lại hoặc retry không sinh dữ liệu trùng lặp).
+
+### 2. Chuẩn hóa & Làm sạch dữ liệu (Silver Layer)
+- Tận dụng toán tử `->>` của PostgreSQL trong model `dbt` để trích xuất các trường lồng nhau từ JSON thô.
+- Ép kiểu dữ liệu nghiêm ngặt (`NUMERIC` cho giá/volume, `BIGINT` cho số lượng giao dịch, `TIMESTAMPTZ` cho thời gian đóng nến).
+- Quy chuẩn hóa tên cột theo định dạng `snake_case` và loại bỏ các bản ghi không hợp lệ hoặc giá âm/null.
+
+### 3. Mô hình hóa dữ liệu (Gold Layer - Star Schema)
+- Tách biệt rõ ràng giữa thực thể mô tả (Dimension) và số đo theo thời gian (Fact).
+- Sinh Surrogate Key bằng kỹ thuật băm `MD5(CONCAT(symbol, '_', snapshot_timestamp, '_', ingested_at))` đảm bảo tính duy nhất tuyệt đối cho từng snapshot của mỗi đồng coin.
+
+### 4. Data Quality Testing & Circuit Breaker
+- Cấu hình kiểm thử tự động với `dbt test` kiểm tra tính toàn vẹn:
+  - `unique` & `not_null` cho các cột Surrogate Key.
+  - `relationships` kiểm tra ràng buộc toàn vẹn tham chiếu (Referential Integrity) giữa bảng Fact và Dimension.
+- Đóng vai trò như một **Circuit Breaker**: nếu dữ liệu không đạt chuẩn kiểm thử, task `dbt test` sẽ trả về lỗi (`exit code 1`), khiến Airflow dừng luồng xử lý downstream và gửi cảnh báo ngay lập tức.
+
+### 5. Điều phối tự động hóa (Airflow Workflow)
+- Toàn bộ pipeline được cấu hình chạy tự động theo chu kỳ mỗi giờ (`@hourly`).
+- Thiết lập cơ chế tự động phục hồi lỗi (`retries=2`, `retry_delay=2m`).
+
+---
+
+## 📊 Mô hình hóa dữ liệu (Star Schema)
+
+```
+┌──────────────────────────────────────┐       ┌──────────────────────────────────────┐
+│        gold.dim_tokens               │       │      gold.fact_market_metrics        │
+├──────────────────────────────────────┤       ├──────────────────────────────────────┤
+│ PK  token_key          VARCHAR(32)   │◄──┐   │ PK  metric_key         VARCHAR(32)   │
+│     symbol             VARCHAR(20)   │   └───┼─ FK token_key          VARCHAR(32)   │
+│     base_asset         VARCHAR(20)   │       │     current_price      NUMERIC       │
+│     quote_asset        VARCHAR(20)   │       │     price_change_24h   NUMERIC       │
+└──────────────────────────────────────┘       │     price_change_pct   NUMERIC       │
+                                               │     high_price_24h     NUMERIC       │
+                                               │     low_price_24h      NUMERIC       │
+                                               │     volume_base_24h    NUMERIC       │
+                                               │     volume_quote_24h   NUMERIC       │
+                                               │     trade_count_24h    BIGINT        │
+                                               │     snapshot_timestamp TIMESTAMPTZ   │
+                                               │     ingested_at        TIMESTAMPTZ   │
+                                               └──────────────────────────────────────┘
+```
 
 ---
 
 ## 🛠️ Công nghệ sử dụng (Tech Stack)
 
-| Hạng mục | Công nghệ |
-| :--- | :--- |
-| **Ngôn ngữ** | Python 3.10, SQL |
-| **Orchestration** | Apache Airflow 2.8.1 (LocalExecutor) |
-| **Transformation & Testing** | dbt-core 1.11 (Adapter: dbt-postgres) |
-| **Data Warehouse** | PostgreSQL 15 |
-| **Containerization** | Docker, Docker Compose |
-| **Thư viện chính** | `requests`, `psycopg2-binary`, `execute_values` |
+| Hạng mục | Công nghệ | Chi tiết sử dụng |
+| :--- | :--- | :--- |
+| **Ngôn ngữ** | Python 3.10, SQL | Viết script ingestion, dbt models, custom test |
+| **Orchestration** | Apache Airflow 2.8.1 | LocalExecutor, BashOperator, DAG scheduling |
+| **Transform & Test** | dbt-core 1.11 | `dbt-postgres` adapter, models, data quality testing |
+| **Data Warehouse** | PostgreSQL 15 | Cơ sở dữ liệu lưu trữ 3 tầng schemas |
+| **Hạ tầng & Đóng gói**| Docker & Docker Compose | Container hóa toàn bộ service môi trường độc lập |
+| **Thư viện Python** | `requests`, `psycopg2-binary` | Kết nối API, execute batch insert PostgreSQL |
 
 ---
 
-## 📂 Cấu trúc thư mục (Directory Structure)
+## 📂 Cấu trúc thư mục (Project Structure)
 
 ```text
 crypto-etl-pipeline/
@@ -106,60 +156,63 @@ crypto-etl-pipeline/
 │   ├── init_warehouse.sql                # SQL script khởi tạo 3 schema & bảng Bronze
 │   └── ingest_market_data.py             # Script trích xuất Binance API & nạp vào Bronze
 ├── docker-compose.yml                    # Thiết lập cụm Airflow & Postgres Warehouse
-├── requirements.txt                      # Python dependencies nội bộ
-└── README.md
+├── requirements.txt                      # Python dependencies
+└── README.md                             # Tài liệu kỹ thuật dự án
+```
 
+---
 
-🚀 Hướng dẫn cài đặt & Khởi chạy (Local Setup)
-1. Yêu cầu tiên quyết
-Đã cài đặt Docker và Docker Compose.
+## 🚀 Hướng dẫn triển khai cục bộ (Local Setup)
 
-RAM trống tối thiểu: 4GB.
+### 1. Yêu cầu hệ thống
+- Đã cài đặt [Docker](https://docs.docker.com/get-docker/) & Docker Compose.
+- Khuyến nghị RAM trống tối thiểu: 4GB.
 
-2. Khởi động hệ thống
-Mở terminal tại thư mục gốc và chạy lệnh:
+### 2. Khởi chạy toàn bộ hệ thống
+Clone repository và kích hoạt container bằng một lệnh duy nhất:
 
-Bash
+```bash
+# Clone repository
+git clone https://github.com/dungngoo1/crypto-etl-pipeline.git
+cd crypto-etl-pipeline
+
+# Khởi chạy Docker Compose
 docker compose up -d
-Docker sẽ tự động tải các container, chạy script khởi tạo Database, cài đặt dbt-postgres và kích hoạt Webserver/Scheduler của Airflow.
+```
 
-3. Thông tin kết nối & Dịch vụ
-Apache Airflow Web UI:
+### 3. Thông tin kết nối & Dịch vụ
 
-URL: http://localhost:8080
+| Dịch vụ | URL / Địa chỉ | Tài khoản / Thông số |
+| :--- | :--- | :--- |
+| **Airflow Web UI** | [http://localhost:8080](http://localhost:8080) | Username: `admin` \| Password: `admin` |
+| **Postgres Warehouse** | `localhost:5433` | DB: `crypto_dw` \| User: `dw_user` \| Pass: `dw_password` |
 
-Tài khoản: admin | Mật khẩu: admin
+---
 
-PostgreSQL Warehouse:
+## 🧪 Kiểm thử & Vận hành thủ công (CLI)
 
-Host: localhost | Cổng: 5433
+Bạn có thể kích chạy độc lập từng bước kiểm thử thông qua terminal:
 
-Database: crypto_dw
-
-User: dw_user | Mật khẩu: dw_password
-
-Schemas: bronze, silver, gold
-
-🧪 Vận hành & Kiểm thử thủ công (CLI Testing)
-Nếu muốn kích chạy từng công đoạn trực tiếp qua Command Line:
-
-Chạy script Ingestion nạp tầng Bronze:
-
-Bash
+**1. Kích chạy Python Ingestion (Tầng Bronze):**
+```bash
 docker exec -it crypto-etl-pipeline-airflow-scheduler-1 python /opt/airflow/scripts/ingest_market_data.py
-Chạy transform tầng Silver & Gold qua dbt:
+```
 
-Bash
+**2. Chạy dbt Transformation (Tầng Silver & Gold):**
+```bash
 docker exec -it crypto-etl-pipeline-airflow-scheduler-1 bash -c "cd /opt/airflow/dbt_project && dbt run --profiles-dir ."
-Chạy kiểm định chất lượng dữ liệu (dbt test):
+```
 
-Bash
+**3. Chạy Data Quality Tests (Circuit Breaker):**
+```bash
 docker exec -it crypto-etl-pipeline-airflow-scheduler-1 bash -c "cd /opt/airflow/dbt_project && dbt test --profiles-dir ."
-👤 Tác giả
-Ngô Quốc Dũng - Fresher Data Engineer
+```
 
-GitHub: @dungngoo1
+---
 
-LinkedIn: quocdungngo
+## 👤 Tác giả
 
-Email: dung.nq0410@gmail.com
+- **Ngô Quốc Dũng** - Fresher Data Engineer
+- **GitHub:** [@dungngoo1](https://github.com/dungngoo1)
+- **LinkedIn:** [quocdungngo](https://linkedin.com/in/quocdungngo/)
+- **Email:** dung.nq0410@gmail.com
