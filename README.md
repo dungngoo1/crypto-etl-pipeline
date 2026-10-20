@@ -26,7 +26,7 @@ Hệ thống Data Pipeline tự động thu thập dữ liệu biến động gi
 
 Quy trình xử lý dữ liệu được thiết kế theo luồng ELT chuẩn hóa với các tầng phân định ranh giới rõ ràng:
 
-```
+```mermaid
 flowchart TD
     %% Source
     API["🌐 Binance Public REST API<br/>(24h Ticker Watchlist)"]
@@ -120,7 +120,7 @@ flowchart TD
 
 ## 📊 Mô hình hóa dữ liệu (Star Schema)
 
-```
+```mermaid
 erDiagram
     gold_dim_tokens ||--o{ gold_fact_market_metrics : "has metrics (1:N)"
 
