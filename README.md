@@ -27,46 +27,65 @@ Hệ thống Data Pipeline tự động thu thập dữ liệu biến động gi
 Quy trình xử lý dữ liệu được thiết kế theo luồng ELT chuẩn hóa với các tầng phân định ranh giới rõ ràng:
 
 ```
-┌─────────────────────────────────┐
-│     Binance Public REST API     │
-└────────────────┬────────────────┘
-                 │
-                 │ (1) Ingestion Script (Requests + Psycopg2)
-                 │     Cơ chế Idempotent UPSERT (ON CONFLICT DO UPDATE)
-                 ▼
-┌─────────────────────────────────┐
-│         BRONZE SCHEMA           │
-│   (bronze.raw_crypto_tickers)   │ ──► Lưu nguyên bản JSONB payload & Ingest Metadata
-└────────────────┬────────────────┘
-                 │
-                 │ (2) dbt run --select silver
-                 │     Parse JSON (->>), Cast kiểu dữ liệu, snake_case
-                 ▼
-┌─────────────────────────────────┐
-│         SILVER SCHEMA           │
-│   (silver.stg_crypto_tickers)   │ ──► Bảng dữ liệu sạch, quan hệ chuẩn hóa
-└────────────────┬────────────────┘
-                 │
-                 │ (3) dbt run --select gold
-                 │     Surrogate Key Hash (MD5), Dimensional Modeling
-                 ▼
-┌─────────────────────────────────┐
-│          GOLD SCHEMA            │
-│ ┌─────────────────────────────┐ │
-│ │  dim_tokens (Dimension)     │ │ ──► Thông tin định danh Token & Asset
-│ └──────────────┬──────────────┘ │
-│                │ 1:N            │
-│ ┌──────────────▼──────────────┐ │
-│ │ fact_market_metrics (Fact)  │ │ ──► Số đo định lượng (Price, Volume, Count)
-│ └─────────────────────────────┘ │
-└────────────────┬────────────────┘
-                 │
-                 │ (4) dbt test
-                 ▼
-┌─────────────────────────────────┐
-│         CIRCUIT BREAKER         │ ──► Kiểm tra Unique, Not Null, Foreign Key
-│      (Data Quality Gates)       │     Tự động ngắt downstream khi phát hiện sai lệch
-└─────────────────────────────────┘
+flowchart TD
+    %% Source
+    API["🌐 Binance Public REST API<br/>(24h Ticker Watchlist)"]
+
+    %% Python Ingestion
+    subgraph Ingestion ["Ingestion Step"]
+        PY["🐍 Python Ingestion Script<br/>(Requests + Psycopg2)<br/><i>Idempotent UPSERT (ON CONFLICT)</i>"]
+    end
+
+    %% PostgreSQL Data Warehouse
+    subgraph DWH ["PostgreSQL 15 Data Warehouse (crypto_dw)"]
+        
+        subgraph Bronze ["BRONZE SCHEMA"]
+            B1[("bronze.raw_crypto_tickers<br/>• Raw JSONB payload<br/>• ingested_at metadata")]
+        end
+
+        subgraph Silver ["SILVER SCHEMA"]
+            S1[("silver.stg_crypto_tickers<br/>• Parse JSON (->>)<br/>• Strict Type Casting<br/>• Filter null/negative prices")]
+        end
+
+        subgraph Gold ["GOLD SCHEMA (Star Schema)"]
+            direction TB
+            G_DIM[("gold.dim_tokens<br/><i>Dimension Table</i>")]
+            G_FACT[("gold.fact_market_metrics<br/><i>Fact Table (MD5 Surrogate Key)</i>")]
+            G_DIM -.->|1 : N| G_FACT
+        end
+    end
+
+    %% Quality Gates / Downstream
+    subgraph QualityGate ["Data Quality Gate"]
+        TEST{"⚡ dbt test<br/>(Circuit Breaker)"}
+        ALERT["🛑 Halt Downstream & Alert<br/>(Exit Code 1)"]
+        SUCCESS["✅ Ready for BI / Serving<br/>(Validated Data Mart)"]
+    end
+
+    %% Orchestration Flow
+    API -->|HTTP GET| PY
+    PY -->|UPSERT batch| B1
+    B1 -->|"dbt run --select silver"| S1
+    S1 -->|"dbt run --select gold"| Gold
+    Gold -->|"dbt test"| TEST
+    TEST -->|Fail: Unique / Not Null / FK| ALERT
+    TEST -->|Pass| SUCCESS
+
+    %% Styling
+    classDef source fill:#f9f9f9,stroke:#333,stroke-width:1px;
+    classDef bronze fill:#e0a96d,stroke:#7c4700,stroke-width:1px,color:#000;
+    classDef silver fill:#dcdde1,stroke:#718093,stroke-width:1px,color:#000;
+    classDef gold fill:#f5cd79,stroke:#e15f41,stroke-width:1px,color:#000;
+    classDef breaker fill:#ff7675,stroke:#d63031,stroke-width:1px,color:#fff;
+    classDef success fill:#55efc4,stroke:#00b894,stroke-width:1px,color:#000;
+
+    class API source;
+    class B1 bronze;
+    class S1 silver;
+    class G_DIM,G_FACT gold;
+    class ALERT breaker;
+    class SUCCESS success;
+
 ```
 
 ---
@@ -102,22 +121,31 @@ Quy trình xử lý dữ liệu được thiết kế theo luồng ELT chuẩn h
 ## 📊 Mô hình hóa dữ liệu (Star Schema)
 
 ```
-┌──────────────────────────────────────┐       ┌──────────────────────────────────────┐
-│        gold.dim_tokens               │       │      gold.fact_market_metrics        │
-├──────────────────────────────────────┤       ├──────────────────────────────────────┤
-│ PK  token_key          VARCHAR(32)   │◄──┐   │ PK  metric_key         VARCHAR(32)   │
-│     symbol             VARCHAR(20)   │   └───┼─ FK token_key          VARCHAR(32)   │
-│     base_asset         VARCHAR(20)   │       │     current_price      NUMERIC       │
-│     quote_asset        VARCHAR(20)   │       │     price_change_24h   NUMERIC       │
-└──────────────────────────────────────┘       │     price_change_pct   NUMERIC       │
-                                               │     high_price_24h     NUMERIC       │
-                                               │     low_price_24h      NUMERIC       │
-                                               │     volume_base_24h    NUMERIC       │
-                                               │     volume_quote_24h   NUMERIC       │
-                                               │     trade_count_24h    BIGINT        │
-                                               │     snapshot_timestamp TIMESTAMPTZ   │
-                                               │     ingested_at        TIMESTAMPTZ   │
-                                               └──────────────────────────────────────┘
+erDiagram
+    gold_dim_tokens ||--o{ gold_fact_market_metrics : "has metrics (1:N)"
+
+    gold_dim_tokens {
+        VARCHAR_32 token_key PK "MD5 Hash Surrogate Key"
+        VARCHAR_20 symbol "Trading pair (e.g. BTCUSDT)"
+        VARCHAR_20 base_asset "Base currency (e.g. BTC)"
+        VARCHAR_20 quote_asset "Quote currency (e.g. USDT)"
+    }
+
+    gold_fact_market_metrics {
+        VARCHAR_32 metric_key PK "MD5(symbol + snapshot + ingested_at)"
+        VARCHAR_32 token_key FK "References gold.dim_tokens"
+        NUMERIC current_price "Current ticker price"
+        NUMERIC price_change_24h "24h price absolute change"
+        NUMERIC price_change_pct "24h price percentage change"
+        NUMERIC high_price_24h "24h highest price"
+        NUMERIC low_price_24h "24h lowest price"
+        NUMERIC volume_base_24h "24h volume in base asset"
+        NUMERIC volume_quote_24h "24h volume in quote asset"
+        BIGINT trade_count_24h "Total trade counts"
+        TIMESTAMPTZ snapshot_timestamp "Ticker close time"
+        TIMESTAMPTZ ingested_at "Ingestion execution time"
+    }
+
 ```
 
 ---
@@ -216,3 +244,6 @@ docker exec -it crypto-etl-pipeline-airflow-scheduler-1 bash -c "cd /opt/airflow
 - **GitHub:** [@dungngoo1](https://github.com/dungngoo1)
 - **LinkedIn:** [quocdungngo](https://linkedin.com/in/quocdungngo/)
 - **Email:** dung.nq0410@gmail.com
+
+
+
