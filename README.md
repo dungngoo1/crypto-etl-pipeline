@@ -121,7 +121,8 @@ flowchart TD
 ## 📊 Mô hình hóa dữ liệu (Star Schema)
 
 ```
-![alt text](image-1.png)
+<img width="866" height="478" alt="image" src="https://github.com/user-attachments/assets/679ee31d-5048-4274-a4b8-9ad743a5048f" />
+
 
 ```
 
