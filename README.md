@@ -120,31 +120,8 @@ flowchart TD
 
 ## 📊 Mô hình hóa dữ liệu (Star Schema)
 
-```mermaid
-erDiagram
-    gold_dim_tokens ||--o{ gold_fact_market_metrics : "has metrics (1:N)"
-
-    gold_dim_tokens {
-        VARCHAR_32 token_key PK "MD5 Hash Surrogate Key"
-        VARCHAR_20 symbol "Trading pair (e.g. BTCUSDT)"
-        VARCHAR_20 base_asset "Base currency (e.g. BTC)"
-        VARCHAR_20 quote_asset "Quote currency (e.g. USDT)"
-    }
-
-    gold_fact_market_metrics {
-        VARCHAR_32 metric_key PK "MD5(symbol + snapshot + ingested_at)"
-        VARCHAR_32 token_key FK "References gold.dim_tokens"
-        NUMERIC current_price "Current ticker price"
-        NUMERIC price_change_24h "24h price absolute change"
-        NUMERIC price_change_pct "24h price percentage change"
-        NUMERIC high_price_24h "24h highest price"
-        NUMERIC low_price_24h "24h lowest price"
-        NUMERIC volume_base_24h "24h volume in base asset"
-        NUMERIC volume_quote_24h "24h volume in quote asset"
-        BIGINT trade_count_24h "Total trade counts"
-        TIMESTAMPTZ snapshot_timestamp "Ticker close time"
-        TIMESTAMPTZ ingested_at "Ingestion execution time"
-    }
+```
+![alt text](image-1.png)
 
 ```
 
