@@ -1,0 +1,12 @@
+crypto_medallion:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('WAREHOUSE_HOST', 'postgres-warehouse') }}"
+      user: "{{ env_var('WAREHOUSE_USER', 'dw_user') }}"
+      password: "{{ env_var('WAREHOUSE_PASSWORD') }}"
+      port: "{{ env_var('WAREHOUSE_PORT', '5432') | int }}"
+      dbname: "{{ env_var('WAREHOUSE_DB', 'crypto_dw') }}"
+      schema: public
+      threads: 4

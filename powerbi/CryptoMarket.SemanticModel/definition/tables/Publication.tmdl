@@ -1,0 +1,51 @@
+table Publication
+	lineageTag: 716d3fd7-5ef9-42d3-b0cd-e94c74c18b84
+
+	measure 'Age minutes' = DATEDIFF(MAX(Publication[captured_at]), UTCNOW(), MINUTE)
+		formatString: #,0
+		lineageTag: 874b32ea-34dc-4f1f-aa2f-7e60f1904f8d
+
+	column singleton
+		dataType: boolean
+		lineageTag: 4f5e9e74-001c-444c-8842-d8c37abd31be
+		summarizeBy: none
+		sourceColumn: singleton
+
+	column batch_id
+		dataType: string
+		lineageTag: c7d2bbd2-0636-42c7-a9d7-efa2fb4df5db
+		summarizeBy: none
+		sourceColumn: batch_id
+
+	column captured_at
+		dataType: dateTime
+		formatString: yyyy-MM-dd HH:mm
+		lineageTag: dad01c49-a9e2-4914-ad0c-4b7524759d1b
+		summarizeBy: none
+		sourceColumn: captured_at
+
+		variation Variation
+			isDefault
+			relationship: aaf042df-9bf3-4ff4-86a9-7ca1865a4203
+			defaultHierarchy: LocalDateTable_bf2554f1-be05-42e7-ba93-bbef0bb3a545.'Date Hierarchy'
+
+	column published_at
+		dataType: dateTime
+		formatString: yyyy-MM-dd HH:mm
+		lineageTag: d82a85d3-343b-4588-a1a2-a5567f32e477
+		summarizeBy: none
+		sourceColumn: published_at
+
+		variation Variation
+			isDefault
+			relationship: 563cda3c-0d18-4614-81aa-b6cb7720db3f
+			defaultHierarchy: LocalDateTable_6834cf22-f07f-4bc9-bf0e-feb8b71105cd.'Date Hierarchy'
+
+	partition Publication = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database(Server, Database, [CreateNavigationProperties=false]),
+				    Data = Source{[Schema="ga", Item="publication_status"]}[Data],
+				    UTC = Table.TransformColumns(Data, {{"captured_at", each if _ = null then null else DateTimeZone.RemoveZone(DateTimeZone.ToUtc(DateTimeZone.From(_))), type nullable datetime}, {"published_at", each if _ = null then null else DateTimeZone.RemoveZone(DateTimeZone.ToUtc(DateTimeZone.From(_))), type nullable datetime}})
+				in UTC

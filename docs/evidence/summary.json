@@ -1,0 +1,20 @@
+{
+  "captured_at_utc": "2026-10-25T08:30:58.762291+00:00",
+  "raw_tickers": 3739,
+  "analytics_pairs": 1382,
+  "classification": {
+    "nonpositive_price": 1,
+    "eligible": 1382,
+    "inactive": 2353,
+    "missing_metadata": 3
+  },
+  "dbt_core": "1.12.5",
+  "dbt_postgres": "1.11.0",
+  "postgres": "15.6",
+  "python": "3.13",
+  "models": 6,
+  "data_tests": 35,
+  "powerbi_json_definitions": 26,
+  "powerbi_desktop_rendered": false,
+  "docker_stack_started": false
+}

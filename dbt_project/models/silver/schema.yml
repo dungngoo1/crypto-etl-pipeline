@@ -1,0 +1,22 @@
+version: 2
+models:
+  - name: stg_crypto_tickers
+    description: Typed all-ticker history. Ineligible rows remain with an exclusion reason.
+    columns:
+      - name: symbol
+        tests: [not_null]
+      - name: batch_id
+        tests: [not_null]
+      - name: snapshot_timestamp
+        tests: [not_null]
+      - name: current_price
+        tests: [not_null]
+      - name: trade_count_24h
+        tests: [not_null]
+      - name: is_analytics_eligible
+        tests: [not_null]
+      - name: exclusion_reason
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['missing_metadata', 'inactive', 'nonpositive_price', 'no_activity']

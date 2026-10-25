@@ -1,0 +1,210 @@
+{
+  "dbt_version": "1.12.5",
+  "results": [
+    {
+      "unique_id": "test.crypto_medallion.source_not_null_bronze_ingestion_batches_batch_id.0796a296b9",
+      "status": "pass",
+      "execution_time": 0.19001317024230957
+    },
+    {
+      "unique_id": "test.crypto_medallion.source_unique_bronze_ingestion_batches_batch_id.fa58d47a8e",
+      "status": "pass",
+      "execution_time": 0.19076299667358398
+    },
+    {
+      "unique_id": "model.crypto_medallion.stg_crypto_tickers",
+      "status": "success",
+      "execution_time": 0.8052928447723389
+    },
+    {
+      "unique_id": "test.crypto_medallion.accepted_values_stg_crypto_tickers_exclusion_reason__missing_metadata__inactive__nonpositive_price__no_activity.1c5266f7d0",
+      "status": "pass",
+      "execution_time": 0.09158921241760254
+    },
+    {
+      "unique_id": "test.crypto_medallion.check_silver_grain",
+      "status": "pass",
+      "execution_time": 0.09612059593200684
+    },
+    {
+      "unique_id": "test.crypto_medallion.check_batch_coverage",
+      "status": "pass",
+      "execution_time": 0.11548924446105957
+    },
+    {
+      "unique_id": "test.crypto_medallion.check_numeric_ranges",
+      "status": "pass",
+      "execution_time": 0.11783504486083984
+    },
+    {
+      "unique_id": "test.crypto_medallion.not_null_stg_crypto_tickers_batch_id.7ffc58be1b",
+      "status": "pass",
+      "execution_time": 0.11379003524780273
+    },
+    {
+      "unique_id": "test.crypto_medallion.not_null_stg_crypto_tickers_snapshot_timestamp.37c51b451e",
+      "status": "pass",
+      "execution_time": 0.09492850303649902
+    },
+    {
+      "unique_id": "test.crypto_medallion.not_null_stg_crypto_tickers_is_analytics_eligible.fc3fd447b9",
+      "status": "pass",
+      "execution_time": 0.10109996795654297
+    },
+    {
+      "unique_id": "test.crypto_medallion.not_null_stg_crypto_tickers_symbol.c147c02e03",
+      "status": "pass",
+      "execution_time": 0.07074356079101562
+    },
+    {
+      "unique_id": "test.crypto_medallion.not_null_stg_crypto_tickers_trade_count_24h.3f43501545",
+      "status": "pass",
+      "execution_time": 0.056714534759521484
+    },
+    {
+      "unique_id": "test.crypto_medallion.not_null_stg_crypto_tickers_current_price.1a09a6414d",
+      "status": "pass",
+      "execution_time": 0.20282769203186035
+    },
+    {
+      "unique_id": "model.crypto_medallion.dim_tokens",
+      "status": "success",
+      "execution_time": 0.20370912551879883
+    },
+    {
+      "unique_id": "test.crypto_medallion.unique_dim_tokens_symbol.351f018e00",
+      "status": "pass",
+      "execution_time": 0.1074213981628418
+    },
+    {
+      "unique_id": "test.crypto_medallion.not_null_dim_tokens_token_key.ce0a2558e4",
+      "status": "pass",
+      "execution_time": 0.10838103294372559
+    },
+    {
+      "unique_id": "test.crypto_medallion.not_null_dim_tokens_symbol.6814037c9d",
+      "status": "pass",
+      "execution_time": 0.1102762222290039
+    },
+    {
+      "unique_id": "test.crypto_medallion.unique_dim_tokens_token_key.ae023ff62d",
+      "status": "pass",
+      "execution_time": 0.11194062232971191
+    },
+    {
+      "unique_id": "model.crypto_medallion.fact_market_metrics",
+      "status": "success",
+      "execution_time": 0.11524462699890137
+    },
+    {
+      "unique_id": "test.crypto_medallion.not_null_fact_market_metrics_metric_key.8ec48a2f86",
+      "status": "pass",
+      "execution_time": 0.10188889503479004
+    },
+    {
+      "unique_id": "test.crypto_medallion.not_null_fact_market_metrics_token_key.ff87ab50cb",
+      "status": "pass",
+      "execution_time": 0.10148072242736816
+    },
+    {
+      "unique_id": "test.crypto_medallion.not_null_fact_market_metrics_batch_id.e7a5a0d26a",
+      "status": "pass",
+      "execution_time": 0.11001729965209961
+    },
+    {
+      "unique_id": "test.crypto_medallion.check_gold_coverage",
+      "status": "pass",
+      "execution_time": 0.1128683090209961
+    },
+    {
+      "unique_id": "test.crypto_medallion.relationships_fact_market_metrics_token_key__token_key__ref_dim_tokens_.50f8260187",
+      "status": "pass",
+      "execution_time": 0.09201526641845703
+    },
+    {
+      "unique_id": "test.crypto_medallion.unique_fact_market_metrics_metric_key.e66b16c105",
+      "status": "pass",
+      "execution_time": 0.08982706069946289
+    },
+    {
+      "unique_id": "model.crypto_medallion.symbol_history",
+      "status": "success",
+      "execution_time": 0.14051246643066406
+    },
+    {
+      "unique_id": "model.crypto_medallion.market_overview",
+      "status": "success",
+      "execution_time": 0.15070652961730957
+    },
+    {
+      "unique_id": "model.crypto_medallion.latest_tickers",
+      "status": "success",
+      "execution_time": 0.18182659149169922
+    },
+    {
+      "unique_id": "test.crypto_medallion.not_null_symbol_history_quote_asset.7fc7f2b82b",
+      "status": "pass",
+      "execution_time": 0.1090703010559082
+    },
+    {
+      "unique_id": "test.crypto_medallion.not_null_symbol_history_metric_key.213d59a361",
+      "status": "pass",
+      "execution_time": 0.11766219139099121
+    },
+    {
+      "unique_id": "test.crypto_medallion.check_ga_overview_grain",
+      "status": "pass",
+      "execution_time": 0.07166862487792969
+    },
+    {
+      "unique_id": "test.crypto_medallion.not_null_market_overview_batch_id.6a144ff55a",
+      "status": "pass",
+      "execution_time": 0.09136581420898438
+    },
+    {
+      "unique_id": "test.crypto_medallion.not_null_market_overview_quote_asset.32a2b2ab12",
+      "status": "pass",
+      "execution_time": 0.07952332496643066
+    },
+    {
+      "unique_id": "test.crypto_medallion.check_requested_batch",
+      "status": "pass",
+      "execution_time": 0.08279204368591309
+    },
+    {
+      "unique_id": "test.crypto_medallion.unique_symbol_history_metric_key.5e100d31f8",
+      "status": "pass",
+      "execution_time": 0.1958470344543457
+    },
+    {
+      "unique_id": "test.crypto_medallion.not_null_latest_tickers_metric_key.4fe26e0dc7",
+      "status": "pass",
+      "execution_time": 0.11178231239318848
+    },
+    {
+      "unique_id": "test.crypto_medallion.not_null_latest_tickers_price_change_percent_24h.89cf51a63a",
+      "status": "pass",
+      "execution_time": 0.11591625213623047
+    },
+    {
+      "unique_id": "test.crypto_medallion.not_null_latest_tickers_quote_asset.399436dee7",
+      "status": "pass",
+      "execution_time": 0.10807251930236816
+    },
+    {
+      "unique_id": "test.crypto_medallion.not_null_latest_tickers_symbol.12d1307597",
+      "status": "pass",
+      "execution_time": 0.09743475914001465
+    },
+    {
+      "unique_id": "test.crypto_medallion.unique_latest_tickers_metric_key.d66da75539",
+      "status": "pass",
+      "execution_time": 0.07047343254089355
+    },
+    {
+      "unique_id": "test.crypto_medallion.unique_latest_tickers_symbol.f7bf4490af",
+      "status": "pass",
+      "execution_time": 0.17635822296142578
+    }
+  ]
+}

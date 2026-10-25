@@ -1,0 +1,166 @@
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      === Tool Registration Started ===
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      Tool Configuration at registration time:
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+        Tool Mode: ReadOnly
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+        Current Tool Mode: ReadOnly
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      Registering tools (all tools registered, write operations controlled by WriteGuard)...
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      Loading tool: DatabaseOperationsTool
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      Loading tool: TableOperationsTool
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      Loading tool: ColumnOperationsTool
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      Loading tool: MeasureOperationsTool
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      Loading tool: NamedExpressionOperationsTool
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      Loading tool: FunctionOperationsTool
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      Loading tool: ObjectTranslationOperationsTool
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      Loading tool: CalculationGroupOperationsTool
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      Loading tool: CalendarOperationsTool
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      Loading tool: QueryGroupOperationsTool
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      Loading tool: RelationshipOperationsTool
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      Skipping tool: DataSourceOperationsTool (not supported in PowerBI compatibility mode)
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      Loading tool: PartitionOperationsTool
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      Loading tool: SecurityRoleOperationsTool
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      Loading tool: UserHierarchyOperationsTool
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      Loading tool: CultureOperationsTool
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      Loading tool: ModelOperationsTool
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      Loading tool: PerspectiveOperationsTool
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      Loading tool: ConnectionOperationsTool
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      Loading tool: DaxQueryOperationsTool
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      Loading tool: TransactionOperationsTool
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      Loading tool: TraceOperationsTool
+info: PowerBIModelingMCP.Library.Services.ToolRegistrationService[0]
+      === Tool Registration Completed ===
+info: PowerBIModelingMCP.Library.Services.PromptRegistrationService[0]
+      === Prompt Registration Started ===
+info: PowerBIModelingMCP.Library.Services.PromptRegistrationService[0]
+      Registering prompts...
+info: PowerBIModelingMCP.Library.Services.PromptRegistrationService[0]
+      Loading common user scenario prompts...
+info: PowerBIModelingMCP.Library.Services.PromptRegistrationService[0]
+      Loading DAX query prompts...
+info: PowerBIModelingMCP.Library.Services.PromptRegistrationService[0]
+      === Prompt Registration Completed ===
+info: PowerBIModelingMCP.Library.Services.ResourceRegistrationService[0]
+      === Resource Registration Started ===
+info: PowerBIModelingMCP.Library.Services.ResourceRegistrationService[0]
+      Loading resources dynamically...
+info: PowerBIModelingMCP.Library.Services.ResourceRegistrationService[0]
+      Loading markdown resources from: C:\Users\Admin\Documents\Codex\2026-10-25\c\outputs\tools\powerbi-mcp-1.0.0\package\dist\Resources
+info: PowerBIModelingMCP.Library.Services.ResourceRegistrationService[0]
+      Found 4 resource definitions
+info: PowerBIModelingMCP.Library.Services.ResourceRegistrationService[0]
+      Loaded resource: Calendar Instructions and Examples - Guidelines for creating Power BI calendar objects
+info: PowerBIModelingMCP.Library.Services.ResourceRegistrationService[0]
+      Loaded resource: DAX Query Instructions and Examples - Guidelines for writing Power BI DAX queries
+info: PowerBIModelingMCP.Library.Services.ResourceRegistrationService[0]
+      Loaded resource: DAX UDF Instructions and Examples - Guidelines for creating Power BI DAX user-defined functions (UDFs)
+info: PowerBIModelingMCP.Library.Services.ResourceRegistrationService[0]
+      Loaded resource: PowerBI Project Instructions - Instructions for structuring Power BI projects
+info: PowerBIModelingMCP.Library.Services.ResourceRegistrationService[0]
+      Successfully loaded 4 resources from markdown files
+info: PowerBIModelingMCP.Library.Services.ResourceRegistrationService[0]
+      Registered 4 markdown resources
+info: PowerBIModelingMCP.Library.Services.ResourceRegistrationService[0]
+      === Resource Registration Completed ===
+info: Program[0]
+      Authentication service selected. AuthenticationMode=InteractiveBrowser
+info: Program[0]
+      Server starting: Version=1.0.0, Mode=ReadOnly, Compatibility=PowerBI, Transport=stdio
+info: Program[0]
+      EULA acceptance status. EulaAccepted=True
+info: Program[0]
+      Local audit logging enabled: Directory=C:\Users\Admin\Documents\Codex\2026-10-25\c\outputs\crypto-etl-pipeline\.local\mcp-audit
+info: Program[0]
+      === Final Configuration Settings ===
+info: Program[0]
+      Version: 1.0.0
+info: Program[0]
+      Tool Configuration:
+info: Program[0]
+        Mode: ReadOnly (Source: Command Line)
+info: Program[0]
+        Compatibility: PowerBI (Source: Command Line)
+info: Program[0]
+        Skip Confirmation: Enabled
+info: Program[0]
+      ========================================
+info: ModelContextProtocol.Server.StdioServerTransport[857250842]
+      Server (stream) (powerbi-authoring-local) transport reading messages.
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: C:\Users\Admin\Documents\Codex\2026-10-25\c
+info: ModelContextProtocol.Server.McpServer[570385771]
+      Server (powerbi-authoring-local 1.0.0) method 'initialize' request handler called.
+info: ModelContextProtocol.Server.McpServer[570385771]
+      Server (powerbi-authoring-local 1.0.0), Client (crypto-etl-validation 1.0) method 'tools/list' request handler called.
+info: ModelContextProtocol.Server.McpServer[1867955179]
+      Server (powerbi-authoring-local 1.0.0), Client (crypto-etl-validation 1.0) method 'initialize' request handler completed in 40.5053ms.
+info: ModelContextProtocol.Server.McpServer[1867955179]
+      Server (powerbi-authoring-local 1.0.0), Client (crypto-etl-validation 1.0) method 'tools/list' request handler completed in 34.6963ms.
+info: ModelContextProtocol.Server.McpServer[570385771]
+      Server (powerbi-authoring-local 1.0.0), Client (crypto-etl-validation 1.0) method 'tools/call' request handler called.
+info: PowerBIModelingMCP.Library.Tools.ConnectionOperationsTool[0]
+      ConnectionOperationsTool.ListLocalInstances completed: Count=1
+info: PowerBIModelingMCP.Library.Tools.ConnectionOperationsTool[0]
+      ToolCallCompleted: connection_operations.listlocalinstances IsWrite=False IsError=False SemanticModelId=(null)
+info: ModelContextProtocol.Server.McpServer[2065726448]
+      "connection_operations" completed. IsError = False.
+info: ModelContextProtocol.Server.McpServer[1867955179]
+      Server (powerbi-authoring-local 1.0.0), Client (crypto-etl-validation 1.0) method 'tools/call' request handler completed in 171.24ms.
+info: ModelContextProtocol.Server.McpServer[570385771]
+      Server (powerbi-authoring-local 1.0.0), Client (crypto-etl-validation 1.0) method 'tools/call' request handler called.
+info: PowerBIModelingMCP.Library.Tools.ConnectionOperationsTool[0]
+      ConnectionOperationsTool.ConnectBimFile completed: ConnectionName=BIM-CryptoMarket
+info: PowerBIModelingMCP.Library.Tools.ConnectionOperationsTool[0]
+      ToolCallCompleted: connection_operations.connectbimfile IsWrite=False IsError=False SemanticModelId=(null)
+info: ModelContextProtocol.Server.McpServer[2065726448]
+      "connection_operations" completed. IsError = False.
+info: ModelContextProtocol.Server.McpServer[1867955179]
+      Server (powerbi-authoring-local 1.0.0), Client (crypto-etl-validation 1.0) method 'tools/call' request handler completed in 185.9455ms.
+info: ModelContextProtocol.Server.McpServer[570385771]
+      Server (powerbi-authoring-local 1.0.0), Client (crypto-etl-validation 1.0) method 'tools/call' request handler called.
+info: PowerBIModelingMCP.Library.Tools.ModelOperationsTool[0]
+      ModelOperationsTool.GetStats completed: ConnectionName=(null)
+info: PowerBIModelingMCP.Library.Tools.ModelOperationsTool[0]
+      ToolCallCompleted: model_operations.getstats IsWrite=False IsError=False SemanticModelId=(null)
+info: ModelContextProtocol.Server.McpServer[2065726448]
+      "model_operations" completed. IsError = False.
+info: ModelContextProtocol.Server.McpServer[1867955179]
+      Server (powerbi-authoring-local 1.0.0), Client (crypto-etl-validation 1.0) method 'tools/call' request handler completed in 55.8439ms.
+info: ModelContextProtocol.Server.McpServer[570385771]
+      Server (powerbi-authoring-local 1.0.0), Client (crypto-etl-validation 1.0) method 'tools/call' request handler called.
+info: PowerBIModelingMCP.Library.Tools.MeasureOperationsTool[0]
+      MeasureOperationsTool.List completed: ConnectionName=(null), TotalCount=9, ReturnedCount=9, IsTruncated=False
+info: PowerBIModelingMCP.Library.Tools.MeasureOperationsTool[0]
+      ToolCallCompleted: measure_operations.list IsWrite=False IsError=False SemanticModelId=(null)
+info: ModelContextProtocol.Server.McpServer[2065726448]
+      "measure_operations" completed. IsError = False.
+info: ModelContextProtocol.Server.McpServer[1867955179]
+      Server (powerbi-authoring-local 1.0.0), Client (crypto-etl-validation 1.0) method 'tools/call' request handler completed in 23.2303ms.

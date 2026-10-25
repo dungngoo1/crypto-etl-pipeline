@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "CryptoMarket"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "fa2bd4b1-8f16-4ed2-a6ac-3bc27263ec0a"
+  }
+}

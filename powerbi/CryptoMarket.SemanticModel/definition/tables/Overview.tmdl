@@ -1,0 +1,121 @@
+table Overview
+	lineageTag: d17f654e-8ba3-47db-b64e-ce9c5e6917fd
+
+	measure 'Rolling quote volume' = IF(HASONEVALUE(Overview[quote_asset]) && HASONEVALUE(Overview[batch_id]), MAX(Overview[volume_quote_24h]))
+		formatString: #,0
+		lineageTag: 38bad6db-8d18-442a-9463-448d3c0c5d84
+
+	measure 'Pair breadth' = IF(HASONEVALUE(Overview[quote_asset]) && HASONEVALUE(Overview[batch_id]), MAX(Overview[active_pairs]))
+		formatString: #,0
+		lineageTag: 7cc07d3d-985c-4c8b-9ee9-0fb097aeae27
+
+	column batch_id
+		dataType: string
+		lineageTag: 52779caf-bdcb-4135-b8f8-e2fbb2bad4b7
+		summarizeBy: none
+		sourceColumn: batch_id
+
+	column batch_timestamp
+		dataType: dateTime
+		formatString: yyyy-MM-dd HH:mm
+		lineageTag: 6952ff54-a40b-4238-bc75-56907f5c9e79
+		summarizeBy: none
+		sourceColumn: batch_timestamp
+
+		variation Variation
+			isDefault
+			relationship: 0266cff1-1d99-4696-b75c-1cc61c1ddb84
+			defaultHierarchy: LocalDateTable_7634e623-c141-46f9-b385-741d8fafdeb9.'Date Hierarchy'
+
+	column captured_at
+		dataType: dateTime
+		formatString: yyyy-MM-dd HH:mm
+		lineageTag: 2fd190a4-1bff-4c3d-83bd-15f4a09f669a
+		summarizeBy: none
+		sourceColumn: captured_at
+
+		variation Variation
+			isDefault
+			relationship: 59606bf7-3567-4870-bdc6-8616bd64837a
+			defaultHierarchy: LocalDateTable_17f513fa-b48b-426d-bcf6-d1c3131492cd.'Date Hierarchy'
+
+	column quote_asset
+		dataType: string
+		lineageTag: 02e90f52-59e2-48a2-b774-10d9cc39042f
+		summarizeBy: none
+		sourceColumn: quote_asset
+
+	column returned_pairs
+		dataType: int64
+		lineageTag: 460db91e-4b7b-4c6c-8204-baaf5aa31c0f
+		summarizeBy: sum
+		sourceColumn: returned_pairs
+
+		annotation SummarizationSetBy = Automatic
+
+	column active_pairs
+		dataType: int64
+		lineageTag: e0ed944e-a834-479e-926b-849c438ee7a8
+		summarizeBy: sum
+		sourceColumn: active_pairs
+
+		annotation SummarizationSetBy = Automatic
+
+	column excluded_pairs
+		dataType: int64
+		lineageTag: 57842c23-5446-4077-aa61-733a0f9fb141
+		summarizeBy: sum
+		sourceColumn: excluded_pairs
+
+		annotation SummarizationSetBy = Automatic
+
+	column advancing_pairs
+		dataType: int64
+		lineageTag: 3686a295-19dd-49ed-85e6-45d1f6904e5b
+		summarizeBy: sum
+		sourceColumn: advancing_pairs
+
+		annotation SummarizationSetBy = Automatic
+
+	column declining_pairs
+		dataType: int64
+		lineageTag: d159989b-d6db-47e9-88ea-a70cee5d7dcb
+		summarizeBy: sum
+		sourceColumn: declining_pairs
+
+		annotation SummarizationSetBy = Automatic
+
+	column avg_change_percent_24h
+		dataType: double
+		lineageTag: 5d97a758-c7e3-4d00-bfdc-c1f045fea1c3
+		summarizeBy: sum
+		sourceColumn: avg_change_percent_24h
+
+		annotation SummarizationSetBy = Automatic
+
+	column volume_quote_24h
+		dataType: double
+		lineageTag: 629e615c-9251-4ef7-9953-36767d4fed6b
+		summarizeBy: sum
+		sourceColumn: volume_quote_24h
+
+		annotation SummarizationSetBy = Automatic
+
+	column trade_count_24h
+		dataType: double
+		lineageTag: f209c3c8-5085-4149-9e28-e5db2b843bfd
+		summarizeBy: sum
+		sourceColumn: trade_count_24h
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Overview = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database(Server, Database, [CreateNavigationProperties=false]),
+				    Data = Source{[Schema="ga", Item="market_overview"]}[Data],
+				    UTC = Table.TransformColumns(Data, {{"batch_timestamp", each if _ = null then null else DateTimeZone.RemoveZone(DateTimeZone.ToUtc(DateTimeZone.From(_))), type nullable datetime}, {"captured_at", each if _ = null then null else DateTimeZone.RemoveZone(DateTimeZone.ToUtc(DateTimeZone.From(_))), type nullable datetime}})
+				in UTC

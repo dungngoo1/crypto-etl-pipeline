@@ -1,0 +1,127 @@
+{
+  "initialize": {
+    "result": {
+      "protocolVersion": "2024-11-05",
+      "capabilities": {
+        "logging": {},
+        "prompts": {
+          "listChanged": true
+        },
+        "resources": {
+          "listChanged": true
+        },
+        "tools": {
+          "listChanged": true
+        }
+      },
+      "serverInfo": {
+        "name": "powerbi-authoring-local",
+        "title": "Power BI Authoring MCP Server (Local)",
+        "version": "1.0.0",
+        "description": "Author Power BI semantic models in Power BI Desktop, Microsoft Fabric workspaces, and local PBIP and TMDL files."
+      },
+      "instructions": "Use this server for semantic models in Microsoft Fabric workspaces, Power BI Desktop, or PBIP and TMDL files on disk. Connect to the target semantic model, Power BI Desktop model, or local files before performing model operations. Use only this server for a given authoring task; do not combine it with the hosted Power BI Authoring server."
+    },
+    "id": 1,
+    "jsonrpc": "2.0"
+  },
+  "tool_names": [
+    "user_hierarchy_operations",
+    "transaction_operations",
+    "table_operations",
+    "object_translation_operations",
+    "model_operations",
+    "query_group_operations",
+    "connection_operations",
+    "named_expression_operations",
+    "security_role_operations",
+    "partition_operations",
+    "calendar_operations",
+    "database_operations",
+    "relationship_operations",
+    "dax_query_operations",
+    "perspective_operations",
+    "trace_operations",
+    "column_operations",
+    "measure_operations",
+    "culture_operations",
+    "calculation_group_operations",
+    "function_operations"
+  ],
+  "desktop_instances": {
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"message\":\"Found 1 local PowerBI Desktop and Analysis Services instances\",\"operation\":\"ListLocalInstances\",\"data\":[{\"processId\":23192,\"port\":58514,\"connectionString\":\"data source=localhost:58514;Application Name=MCP-PBIModeling\",\"startTime\":\"2026-10-25T16:08:01.9592637+07:00\"}]}"
+        }
+      ],
+      "isError": false,
+      "_meta": {
+        "annotations": {
+          "title": "connection_operations.listlocalinstances",
+          "readOnlyHint": true
+        }
+      }
+    },
+    "id": 3,
+    "jsonrpc": "2.0"
+  },
+  "connect_bim": {
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"message\":\"Successfully loaded database \\u0027CryptoMarket\\u0027 from BIM file\",\"operation\":\"ConnectBimFile\",\"data\":{\"connectionName\":\"BIM-CryptoMarket\",\"databaseName\":\"CryptoMarket\",\"filePath\":\"C:\\\\Users\\\\Admin\\\\Documents\\\\Codex\\\\2026-10-25\\\\c\\\\outputs\\\\crypto-etl-pipeline\\\\powerbi\\\\CryptoMarket.SemanticModel\\\\model.bim\",\"tablesLoaded\":4,\"measuresLoaded\":9,\"relationshipsLoaded\":0,\"loadedAt\":\"2026-10-25T09:17:33.0345873Z\"}}"
+        }
+      ],
+      "isError": false,
+      "_meta": {
+        "annotations": {
+          "title": "connection_operations.connectbimfile",
+          "readOnlyHint": true
+        }
+      }
+    },
+    "id": 4,
+    "jsonrpc": "2.0"
+  },
+  "model_stats": {
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"modelName\":\"Model\",\"message\":\"Retrieved model statistics successfully\",\"operation\":\"GETSTATS\",\"data\":{\"ModelName\":\"Model\",\"DatabaseName\":\"CryptoMarket\",\"CompatibilityLevel\":1567,\"TableCount\":4,\"TotalMeasureCount\":9,\"TotalColumnCount\":45,\"TotalPartitionCount\":4,\"RelationshipCount\":0,\"RoleCount\":0,\"DataSourceCount\":0,\"CultureCount\":0,\"PerspectiveCount\":0,\"Tables\":[{\"name\":\"Latest\",\"columnCount\":18,\"measureCount\":5,\"partitionCount\":1,\"isHidden\":false},{\"name\":\"History\",\"columnCount\":11,\"measureCount\":1,\"partitionCount\":1,\"isHidden\":false},{\"name\":\"Overview\",\"columnCount\":12,\"measureCount\":2,\"partitionCount\":1,\"isHidden\":false},{\"name\":\"Publication\",\"columnCount\":4,\"measureCount\":1,\"partitionCount\":1,\"isHidden\":false}]}}"
+        }
+      ],
+      "isError": false,
+      "_meta": {
+        "annotations": {
+          "title": "model_operations.getstats",
+          "readOnlyHint": true
+        }
+      }
+    },
+    "id": 5,
+    "jsonrpc": "2.0"
+  },
+  "measures": {
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"message\":\"Found 9 measures across 4 tables\",\"operation\":\"List\",\"data\":[{\"tableName\":\"Latest\",\"measures\":[{\"formatString\":\"#,0\",\"name\":\"Active pairs\"},{\"formatString\":\"#,0.00\",\"name\":\"Volume 24h\"},{\"formatString\":\"0.00%\",\"name\":\"Average change 24h\"},{\"formatString\":\"0.00%\",\"name\":\"Change 24h\"},{\"name\":\"Last snapshot UTC\"}]},{\"tableName\":\"History\",\"measures\":[{\"formatString\":\"#,0.########\",\"name\":\"Pair price\"}]},{\"tableName\":\"Overview\",\"measures\":[{\"formatString\":\"#,0\",\"name\":\"Rolling quote volume\"},{\"formatString\":\"#,0\",\"name\":\"Pair breadth\"}]},{\"tableName\":\"Publication\",\"measures\":[{\"formatString\":\"#,0\",\"name\":\"Age minutes\"}]}]}"
+        }
+      ],
+      "isError": false,
+      "_meta": {
+        "annotations": {
+          "title": "measure_operations.list",
+          "readOnlyHint": true
+        }
+      }
+    },
+    "id": 6,
+    "jsonrpc": "2.0"
+  }
+}

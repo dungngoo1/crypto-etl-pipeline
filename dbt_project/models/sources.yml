@@ -1,0 +1,16 @@
+version: 2
+sources:
+  - name: bronze
+    schema: bronze
+    loaded_at_field: ingested_at
+    freshness:
+      warn_after: {count: 75, period: minute}
+      error_after: {count: 120, period: minute}
+    tables:
+      - name: raw_crypto_tickers
+        description: Every returned ticker; immutable batch, raw ticker and exchange metadata.
+      - name: ingestion_batches
+        loaded_at_field: captured_at
+        columns:
+          - name: batch_id
+            tests: [unique, not_null]

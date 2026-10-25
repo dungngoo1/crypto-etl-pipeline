@@ -1,0 +1,12 @@
+{
+  "name": "Crypto Clear",
+  "dataColors": [
+    "#0D9488",
+    "#EF4444",
+    "#2563EB",
+    "#F59E0B"
+  ],
+  "background": "#F3F6FA",
+  "foreground": "#102A43",
+  "tableAccent": "#0D9488"
+}

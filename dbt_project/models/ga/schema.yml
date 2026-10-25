@@ -1,0 +1,25 @@
+version: 2
+models:
+  - name: latest_tickers
+    columns:
+      - name: metric_key
+        tests: [unique, not_null]
+      - name: symbol
+        tests: [unique, not_null]
+      - name: quote_asset
+        tests: [not_null]
+      - name: price_change_percent_24h
+        tests: [not_null]
+  - name: market_overview
+    description: One batch and quote asset per row; never sum rolling volume over time.
+    columns:
+      - name: batch_id
+        tests: [not_null]
+      - name: quote_asset
+        tests: [not_null]
+  - name: symbol_history
+    columns:
+      - name: metric_key
+        tests: [unique, not_null]
+      - name: quote_asset
+        tests: [not_null]

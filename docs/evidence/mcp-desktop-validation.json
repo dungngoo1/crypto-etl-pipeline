@@ -1,0 +1,78 @@
+{
+  "initialize": {
+    "result": {
+      "protocolVersion": "2024-11-05",
+      "capabilities": {
+        "logging": {},
+        "prompts": {
+          "listChanged": true
+        },
+        "resources": {
+          "listChanged": true
+        },
+        "tools": {
+          "listChanged": true
+        }
+      },
+      "serverInfo": {
+        "name": "powerbi-authoring-local",
+        "title": "Power BI Authoring MCP Server (Local)",
+        "version": "1.0.0",
+        "description": "Author Power BI semantic models in Power BI Desktop, Microsoft Fabric workspaces, and local PBIP and TMDL files."
+      },
+      "instructions": "Use this server for semantic models in Microsoft Fabric workspaces, Power BI Desktop, or PBIP and TMDL files on disk. Connect to the target semantic model, Power BI Desktop model, or local files before performing model operations. Use only this server for a given authoring task; do not combine it with the hosted Power BI Authoring server."
+    },
+    "id": 1,
+    "jsonrpc": "2.0"
+  },
+  "tool_names": [
+    "user_hierarchy_operations",
+    "transaction_operations",
+    "table_operations",
+    "object_translation_operations",
+    "model_operations",
+    "query_group_operations",
+    "connection_operations",
+    "named_expression_operations",
+    "security_role_operations",
+    "partition_operations",
+    "calendar_operations",
+    "database_operations",
+    "relationship_operations",
+    "dax_query_operations",
+    "perspective_operations",
+    "trace_operations",
+    "column_operations",
+    "measure_operations",
+    "culture_operations",
+    "calculation_group_operations",
+    "function_operations"
+  ],
+  "desktop_instances": {
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"message\":\"Found 1 local PowerBI Desktop and Analysis Services instances\",\"operation\":\"ListLocalInstances\",\"data\":[{\"processId\":30128,\"port\":60019,\"connectionString\":\"data source=localhost:60019;Application Name=MCP-PBIModeling\",\"startTime\":\"2026-10-25T16:29:11.1870167+07:00\"}]}"
+        }
+      ],
+      "isError": false,
+      "_meta": {
+        "annotations": {
+          "title": "connection_operations.listlocalinstances",
+          "readOnlyHint": true
+        }
+      }
+    },
+    "id": 3,
+    "jsonrpc": "2.0"
+  },
+  "connect_desktop": {
+    "error": {
+      "code": -32603,
+      "message": "An error occurred."
+    },
+    "id": 4,
+    "jsonrpc": "2.0"
+  }
+}

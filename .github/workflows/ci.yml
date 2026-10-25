@@ -1,0 +1,45 @@
+name: Validate pipeline
+on: [push, pull_request]
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: dw_user
+          POSTGRES_PASSWORD: ci_only
+          POSTGRES_DB: crypto_dw
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U dw_user -d crypto_dw"
+          --health-interval 5s --health-retries 10
+    env:
+      WAREHOUSE_HOST: localhost
+      WAREHOUSE_PORT: "5432"
+      WAREHOUSE_USER: dw_user
+      WAREHOUSE_PASSWORD: ci_only
+      WAREHOUSE_DB: crypto_dw
+      DBT_EXECUTABLE: dbt
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - run: pip install -r requirements.txt -r requirements-dbt.txt -r requirements-dev.txt
+      - run: ruff check scripts tests dags --select E9,F63,F7,F82
+      - run: python -m unittest discover -s tests -v
+      - name: Initialize disposable warehouse
+        run: |
+          python - <<'PY'
+          import psycopg2
+          from pathlib import Path
+          conn = psycopg2.connect(host='localhost', dbname='crypto_dw', user='dw_user', password='ci_only')
+          with conn:
+              with conn.cursor() as cur:
+                  cur.execute(Path('scripts/init_warehouse.sql').read_text())
+          conn.close()
+          PY
+      - run: dbt parse --project-dir dbt_project --profiles-dir dbt_project --vars '{"batch_id":"fixture__integration"}'
+      - run: python scripts/smoke_pipeline.py
+      - run: python scripts/validate_powerbi.py

@@ -1,0 +1,23 @@
+version: 2
+models:
+  - name: dim_tokens
+    description: One trading pair per symbol; latest known asset metadata.
+    columns:
+      - name: token_key
+        tests: [unique, not_null]
+      - name: symbol
+        tests: [unique, not_null]
+  - name: fact_market_metrics
+    description: One returned ticker per immutable logical batch.
+    columns:
+      - name: metric_key
+        tests: [unique, not_null]
+      - name: token_key
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_tokens')
+                field: token_key
+      - name: batch_id
+        tests: [not_null]

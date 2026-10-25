@@ -1,0 +1,31 @@
+DAGs
+Cluster Activity
+Datasets
+Security
+Browse
+Admin
+Docs
+09:43 UTC 
+AA
+ 
+ DAG: crypto_medallion_elt_pipeline All Binance spot tickers: Bronze -> Silver -> Gold -> tested GA -> Power BI
+Schedule: @hourly info 
+
+Next Run: 2026-10-25, 08:00:00
+
+
+
+grid_on Grid
+account_tree Graph
+event Calendar
+hourglass_bottom Task Duration
+repeat Task Tries
+flight_land Landing Times
+vertical_distribute Gantt
+details Details
+code Code
+plagiarism Audit Log
+play_arrow
+delete_outline
+Version: v2.8.1
+Git Version: .release:c0ffa9c5d96625c68ded9562632674ed366b5eb3

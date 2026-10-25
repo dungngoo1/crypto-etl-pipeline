@@ -1,0 +1,10 @@
+{
+  "python": "https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg",
+  "airflow": "https://raw.githubusercontent.com/devicons/devicon/master/icons/apacheairflow/apacheairflow-original.svg",
+  "postgresql": "https://raw.githubusercontent.com/devicons/devicon/master/icons/postgresql/postgresql-original.svg",
+  "docker": "https://raw.githubusercontent.com/devicons/devicon/master/icons/docker/docker-original.svg",
+  "githubactions": "https://raw.githubusercontent.com/devicons/devicon/master/icons/githubactions/githubactions-original.svg",
+  "dbt": "https://cdn.jsdelivr.net/npm/simple-icons@13.0.0/icons/dbt.svg",
+  "binance": "https://cdn.jsdelivr.net/npm/simple-icons@13.0.0/icons/binance.svg",
+  "powerbi": "https://raw.githubusercontent.com/microsoft/PowerBI-Icons/main/SVG/Power-BI.svg"
+}

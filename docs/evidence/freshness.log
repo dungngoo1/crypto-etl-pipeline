@@ -1,0 +1,15 @@
+08:42:24  Running with dbt=1.12.5
+08:42:25  Registered adapter: postgres=1.11.0
+08:42:26  Unable to do partial parsing because config vars, config profile, or config target have changed
+08:42:26  Unable to do partial parsing because profile has changed
+08:42:28  Found 6 models, 35 data tests, 2 sources, 478 macros
+08:42:28
+08:42:28  Concurrency: 4 threads (target='dev')
+08:42:28
+08:42:29  1 of 2 START freshness of bronze.ingestion_batches ............................. [RUN]
+08:42:29  2 of 2 START freshness of bronze.raw_crypto_tickers ............................ [RUN]
+08:42:29  1 of 2 PASS freshness of bronze.ingestion_batches .............................. [PASS in 0.06s]
+08:42:29  2 of 2 PASS freshness of bronze.raw_crypto_tickers ............................. [PASS in 0.07s]
+08:42:29
+08:42:29  Finished running 2 sources in 0 hours 0 minutes and 0.49 seconds (0.49s).
+08:42:29  Done.
