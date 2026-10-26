@@ -217,9 +217,14 @@ Mở [powerbi/CryptoMarket.pbip](powerbi/CryptoMarket.pbip); giữ nguyên các 
 - Không cần API key Binance; chỉ kết nối PostgreSQL GA bằng credentials local.
 - Import refresh không tự chạy theo Airflow. Nếu publish lên Power BI Service, cần cấu hình gateway/lịch refresh phù hợp.
 
-![Preview bố cục từ dữ liệu query thật; không phải ảnh chụp Power BI Desktop](docs/dashboard-preview.png)
+![Hình ảnh Dashboard dữ liệu thật chụp từ Streamlit: Biểu đồ thay đổi % trong 24h, Biểu đồ hiển thị top 10 coin tăng/giảm mạnh nhất trong 24h](docs/dashboard_1.png)
 
-Project đã được kiểm tra JSON theo schema Microsoft; **chưa render hoặc xác nhận DAX/Power Query trong Power BI Desktop**. Ảnh trên là preview được dựng riêng từ dữ liệu GA thật. Không có ảnh DAG xanh giả hoặc lịch sử giá giả lập. Chi tiết lần chạy và giới hạn kiểm chứng nằm trong [VALIDATION.md](docs/VALIDATION.md).
+
+![Biểu đồ thể hiện top 10 cặp coin tăng giảm trong vòng 24h dựa theo tổng volume](docs/dashboard_2.png)
+
+
+![Biểu đồ thay đổi % trong 24h, Biểu đồ hiển thị top 10 coin tăng/giảm mạnh nhất trong 24h, Biểu đồ thể hiện top 10 cặp coin tăng giảm trong vòng 24h dựa theo tổng volume theo dữ liệu dạng Bảng](docs/dashboard_3.png)
+
 
 ## Tài liệu và nguồn
 
